@@ -21,7 +21,7 @@ $(document).ready(function() {
 
 /**
  * Creación de nuevo lead prototipo
- *
+ * @function sendLeadPrototype
  */
 
 function sendLeadPrototype(ref, id) {

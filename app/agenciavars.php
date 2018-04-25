@@ -1,8 +1,8 @@
 <?php
-    if($_POST['id_cartas']!="")
-      $id_cartas = $_POST['id_cartas'];
+    if($_POST['agencia']!="")
+      $slug = $_POST['agencia'];
     else
-      $id_cartas = $_GET['id_cartas'];
+      $slug = $_GET['agencia'];
 
     /*  DB CONNECTION  */
     $hostname="localhost";
@@ -17,14 +17,15 @@
 
     /*  DATASET  */
     function JsonResponse($dataset){
-      	header('Content-Type: application/json');
-      	header('Access-Control-Allow-Origin: *');
+        header('Content-Type: application/json');
+        header('Access-Control-Allow-Origin: *');
+        
       	echo json_encode($dataset);
       	exit();
     }
 
     // $data = [];
-    $sql = "SELECT * FROM agencias WHERE id = ".$id_cartas;
+    $sql = "SELECT * FROM agencias WHERE landing_slug LIKE '%".$slug."%'";
     $result=mysql_query ($sql) or die (mysql_error());
 
     $data = mysql_fetch_assoc($result);

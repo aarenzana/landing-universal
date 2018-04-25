@@ -194,6 +194,11 @@
 
 <!-- [[ Inventario ]] -->
 <section id="inventario">
+	<script id="listing-template" type="text/x-handlebars-template">
+		<p>{{ id }}</p>
+		<p>{{ color_e }}</p>
+		<p>{{ color_i }}</p>
+	</script>
 	<div class="container invfeed">
 			
 			<?php
@@ -456,66 +461,72 @@
 
 
 <!-- [[ Footer ]] -->
-<footer class="container bg-footer">
-	<div class="spacer-20"></div>
-	<div class="container-1200 center-content flex flex-wrap">
+<footer class="container bg-footer" id="footer">
+	<script id="footer-template" type="text/x-handlebars-template">
+		<div class="spacer-20"></div>
+		<div class="container-1200 center-content flex flex-wrap">
 
-		<!-- Address -->
-		<div class="i-b lg4 md4 sm6 ph12 p_75">
-			<p class="f-white f1">
-				<a href="<?=$Agencia['url_privacidad']?>" style="f-white f1">Aviso de privacidad</a>
-				<br><br><strong><?=$Agencia['agencia']?></strong>
-				<br>
-				<?=$Agencia['direccion_linea1']?><br />
-				<?=$Agencia['direccion_linea2']?><br />
-				<?=$Agencia['direccion_linea3']?><br />
-				<br>
-				<strong class="f1">Teléfono<br></strong><?=$Agencia['telefono_tracking']?>
-			</p>
-		</div>
+			<!-- Address -->
+			<div class="i-b lg4 md4 sm6 ph12 p_75">
+				<p class="f-white f1">
+					<a href="" style="f-white f1">Aviso de privacidad</a>
+					<br><br><strong>{{ agencia }}</strong>
+					<br>
+					{{ dir_l1 }}<br />
+					{{ dir_l2 }}<br />
+					{{ dir_l3 }}<br />
+					<br>
+					<strong class="f1">Teléfono<br></strong>{{ telefono_track }}
+				</p>
+			</div>
 
-		<!--Social Links-->
-		<div class="i-b lg4 md4 sm6 ph12 p_75">
-			&nbsp;
-		</div>
+			<!--Social Links-->
+			<div class="i-b lg4 md4 sm6 ph12 p_75">
+				&nbsp;
+			</div>
 
-		<!--Redes sociales-->
-		<div class="i-b lg4 md4 sm6 ph12 p_5">
-			<div class="flex flex-wrap">
-				<div class="center center-content">
-					<a href="<?=$Agencia['facebook']?>" target="_blank" class="i-b p_5">
-						<div class="btn-media">
-							<i class="glyph-icon flaticon-facebook-logo"></i>
-						</div>
-					</a>
-					<a href="<?=$Agencia['twitter']?>" target="_blank" class="i-b p_5">
-						<div class="btn-media">
-							<i class="glyph-icon flaticon-twitter-logo-silhouette"></i>
-						</div>
-					</a>
-					<a href="<?=$Agencia['youtube']?>" target="_blank" class="i-b p_5">
-						<div class="btn-media">
-							<i class="glyph-icon flaticon-youtube"></i>
-						</div>
-					</a>
-					<a href="<?=$Agencia['instagram']?>" target="_blank" class="i-b p_5">
-						<div class="btn-media">
-							<i class="glyph-icon flaticon-instagram-logo"></i>
-						</div>
-					</a>
+			<!--Redes sociales-->
+			<div class="i-b lg4 md4 sm6 ph12 p_5">
+				<div class="flex flex-wrap">
+					<div class="center center-content">
+						<a href="{{ facebook }}" target="_blank" class="i-b p_5">
+							<div class="btn-media">
+								<i class="glyph-icon flaticon-facebook-logo"></i>
+								{{ facebook }}
+							</div>
+						</a>
+						<a href="{{ twitter }}" target="_blank" class="i-b p_5">
+							<div class="btn-media">
+								<i class="glyph-icon flaticon-twitter-logo-silhouette"></i>
+								{{ twitter }}
+							</div>
+						</a>
+						<a href="{{ youtube }}" target="_blank" class="i-b p_5">
+							<div class="btn-media">
+								<i class="glyph-icon flaticon-youtube"></i>
+								{{ youtube }}
+							</div>
+						</a>
+						<a href="{{ instagram }}" target="_blank" class="i-b p_5">
+							<div class="btn-media">
+								<i class="glyph-icon flaticon-instagram-logo"></i>
+								{{ instagram }}
+							</div>
+						</a>
+					</div>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="ph12 bg-gray-audi">
-		<div class="container-1200 center-content flex flex-wrap">
-			<div class="i-b ph12 sm12 md8 lg8 center-content">
-				<p class="f-white center f10"><br><br>CRM automotriz es una herramienta de <a href="http://adpunto.mx/contact/" target="_blank" class="f10">adpunto.mx</a> ® 2017 Todos los derechos reservados.&nbsp; <strong class="f10">Teléfono</strong> &nbsp;(55) 5536 6156</p>
+		<div class="ph12 bg-gray-audi">
+			<div class="container-1200 center-content flex flex-wrap">
+				<div class="i-b ph12 sm12 md8 lg8 center-content">
+					<p class="f-white center f10"><br><br>CRM automotriz es una herramienta de <a href="http://adpunto.mx/contact/" target="_blank" class="f10">adpunto.mx</a> ® 2017 Todos los derechos reservados.&nbsp; <strong class="f10">Teléfono</strong> &nbsp;(55) 5536 6156</p>
+				</div>
 			</div>
+			<div class="spacer-20"></div>
 		</div>
-		<div class="spacer-20"></div>
-	</div>
+	</script>
 </footer>
 
 
@@ -532,11 +543,16 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
 <!-- Infinite Scroll -->
 <script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
+<!-- Handlebars JS -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
 
 
 <script>
 	//Initialization
 	$(document).ready(function () {
+		// AppInit();
+		
+
 		Waves.attach('.btn, .btn-floating', ['waves-light']);
 		Waves.attach('.view .mask', ['waves-light']);
 		Waves.attach('.waves-light', ['waves-light']);

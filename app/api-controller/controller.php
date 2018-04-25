@@ -4,8 +4,8 @@
 			$_GET['p'] = 1;
 		}
 
-		$id_seminuevos  = "36";    // need to make these dynamic
-		$id_cartas      = "28";    // need to make these dynamic
+		// $id_seminuevos  = "36";    // need to make these dynamic
+		// $id_cartas      = "28";    // need to make these dynamic
 		$root = './';
 
 		require('./app/functions.php');
