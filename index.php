@@ -4,7 +4,7 @@
 	$is_admin       = ($_GET['admin'] == "adpQS1k6R") ? "&admin=adpQS1k6R" : "/#top";
 	$show_admin     = ($_GET['admin'] == "adpQS1k6R") ? "show-admin-data" : "";
 
-	require($api_controller);
+	include($api_controller);
 
 	// $meta_title = "Porsche Centre San Ángel";
 	// $meta_desc  = "Agencia Porsche Centre San Ángel, Ciudad de México. Insurgentes Sur 2336, Álvaro Obregón, Chimalistac, 01070 CDMX.  Teléfono: (55) 5662 0838";
@@ -39,6 +39,15 @@
 <body>
 
 <?php getCustomModule('header', $id_cartas) ?>
+
+<!-- [[ Default Banner ]] -->
+<section id="herobanner" class="container-fluid" style="background:#e2e2e2; min-height:400px">
+		<div class="container" style="padding-top:10em">
+			<h2 class="display-5">Banner Callout Text</h2>
+			<p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
+			<a class="btn btn-primary waves-effect waves-light">CTA with waves</a>
+		</div>
+</section>
 
 
 <?php //getCustomModule('testmodule', $id_cartas) ?>
@@ -176,6 +185,17 @@
 </section>
 
 
+<!-- [[ Loader ]]  -->
+<section id="loader" style="display:none; height:60vh; padding:8em;">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2>Loading ...</h2>
+			</div>
+		</div>
+	</div>
+</section>
+
 
 <!-- [[ Item Counter ]]  -->
 <section id="itemcounter" style="display:none">
@@ -193,45 +213,38 @@
 
 
 <!-- [[ Inventario ]] -->
-<section id="inventario">
+<section id="inventario" style="display:none">
 	<script id="listing-template" type="text/x-handlebars-template">
-		<p>{{ id }}</p>
-		<p>{{ color_e }}</p>
-		<p>{{ color_i }}</p>
-	</script>
-	<div class="container invfeed">
-			
-			<?php
-					$j=0;
-					foreach($vehiculos as $vehiculo):
-						//var_dump($vehiculo);
-						 echo '<!--Auto '.$j.'-->';
-			?>
-					
+
+			<div class="container">
+	
 					<!-- ** START ITEM CARD **  -->
-					<div class="card invcard" id="itemid-<?=$vehiculo['id']?>" style="margin:2em 0;">
+					<div class="card invcard" id="itemid-{{id}}" style="margin:2em 0;">
 						<div class="row">
 
 							<!-- Item Description and Thumb -->
 							<div class="col-sm-6 col-md-4">
 								<div class="itemdesc--modelname">
 									<h4>
-										<?=$vehiculo['nombre_modelo']?>&nbsp;-&nbsp;
-										<?=$vehiculo['stock_id']?>
-										<span>&nbsp;&nbsp;<?=$vehiculo['year']?></span>
+										{{model}}&nbsp;-&nbsp;
+										{{stock_id}}
+										<span>&nbsp;&nbsp;{{year}}</span>
 									</h4>
 									
 								</div>
 								<div class="invcard--thumb">
-									<img src="http://www.adpdev.com/adp/mx/seminuevos/uploads/listings/pics<?=$vehiculo["id"]?>/<?=$vehiculo['galleries'][0]?>" width="100%" />
+									<img src="http://www.adpdev.com/adp/mx/seminuevos/uploads/listings/{{thumb}}" width="100%" />
+								</div>
+								<div class="invcard--interior" style="display:none">
+									<img src="http://www.adpdev.com/adp/mx/seminuevos/uploads/listings/pics{{id}}/{{interior}}" width="100%"/>
 								</div>
 								<div class="itemdesc--color">
 									<ul class="list-group list-group-flush">
 											<li class="list-group-item">
-												<span><strong>Color: </strong>&nbsp;&nbsp;<?=$vehiculo['color_e']?></span>
+												<span><strong>Color: </strong>&nbsp;&nbsp;{{color_e}}</span>
 											</li>
 											<li class="list-group-item">
-												<span><strong>Interiores: </strong>&nbsp;&nbsp;<?=$vehiculo['color_i']?></span>
+												<span><strong>Interiores: </strong>&nbsp;&nbsp;{{color_i}}</span>
 											</li>
 									</ul>
 								</div>
@@ -241,20 +254,19 @@
 							<div class="col-sm-6 col-md-5">
 								<div class="itemdesc--details">
 										<h5>
-												<?php if($vehiculo['engine'] !== ''): ?>
-														Motor <?=strtoupper($vehiculo['engine'])?> &nbsp;/&nbsp;
-												<?php endif; ?>
-
-												<?php if($vehiculo['horse_power'] !== ''): ?>
-														<?=strtoupper($vehiculo['horse_power'])?>HP de Potencia
-												<?php endif; ?>
+												{{#if engine}}
+														Motor {{engine}} &nbsp;/&nbsp;
+												{{/if}}
+												
+												{{#if horse_power}}
+														{{horse_power}}HP de Potencia
+												{{/if}}
+												
 												<br />
 
-												<?php
-														$transtype = $vehiculo['trans_name'];
-														$transtype = str_replace("VEL", "velocidades", $transtype);
-												?>
-												<?=$transtype?>
+												{{#if trans_name}}
+														{{trans_name}}
+												{{/if}}
 										</h5>
 
 										<div class="viewmore" style="display:none">
@@ -263,23 +275,14 @@
 
 									<div class="featurelist">
 										<ul class="list-group list-group-flush">
-												<?php
-														// $arr_features = $vehiculo['features'];
-														// $feature_limit = array_slice($arr_features, 0, 5);
-
-														$vehiculo["body"] = str_replace(array("\n", "\r"), '', $vehiculo["body"]);
-														$destacados = explode(",",$vehiculo["body"]);
-														$feature_limit = array_slice($destacados, 0, 7);
-
-														foreach($feature_limit as $feature):
-
-															$pattern = "/\&lt;\/p&gt;/";
-															$feature = preg_replace($pattern, "", $feature);?>
-
-															<li class="list-group-item">
-																<span class="featurelist--item"><?=ucfirst(ltrim($feature))?></span>
-															</li>
-												<?php endforeach;?>
+												<!-- Features go here -->
+												{{#each features}}
+														{{#if this}}
+																<li class="list-group-item">
+																		{{this}}
+																</li>
+														{{/if}}
+												{{/each}}
 										</ul>
 									</div>								
 								</div>
@@ -292,7 +295,7 @@
 								<div class="itemdesc--price">
 									<h3 class="desde-precio">
 										<span style="font-size:15px;">Desde&nbsp;</span> 
-										<?=$vehiculo['price_sale']?>
+										{{price_sale}}
 									</h3>
 									<span style="color:#666; font-size:11px;">*Consulte Disponibilidad</span>									
 								</div>
@@ -303,7 +306,7 @@
 									<!-- Interesa Form Button -->
 									<div 
 											class="meinteresa btn btn-primary waves-effect waves-light" 
-											data-descprefill="<?=$vehiculo['nombre_marca']?> <?=$vehiculo['nombre_modelo']?> - <?=$vehiculo['stock_id']?> <?=$vehiculo['year']?>"
+											data-descprefill="{{make}} {{model}} - {{stock_id}} {{year}}"
 											data-toggle="modal"
 											data-target="#itemContactForm"
 									>
@@ -312,12 +315,12 @@
 									
 
 									<!-- Boton Galeria Fotos -->
-									<div class="itemgallery-<?=$j?> gallery--btn btn btn-dark waves-effect waves-light">
+									<div class="itemgallery-{{i}} gallery--btn btn btn-dark waves-effect waves-light" data-gallery={{i}}>
 										Ver galería
 									</div>
 
 									<!-- Ver Detalle Button -->
-									<a href="<?=doUrl($vehiculo['idx'], $vehiculo['slug'])?>" class="btn btn-primary waves-effect waves-light">
+									<a href="javascript:;" class="btn btn-primary waves-effect waves-light" onclick="doItemUrl('{{idx}}', '{{slug}}')">
 											Ver Detalle
 									</a>
 
@@ -332,26 +335,22 @@
 					</div>
 					<!-- ** END ITEM CARD **  -->
 						
-			<?php
-					$j=$j+1;
-					endforeach;
-			?>
-
-	</div>
+			</div>
+	</script>
 
 	<!-- status elements -->
-	<div class="scroller-status">
+	<!-- <div class="scroller-status">
 		<div class="infinite-scroll-request loader-ellips">
 			...
 		</div>
 		<p class="infinite-scroll-last">End of content</p>
 		<p class="infinite-scroll-error">No more pages to load</p>
-	</div>
+	</div> -->
 
 	<!-- pagination has path -->
-	<p class="pagination">
+	<!-- <p class="pagination">
 		<a class="pagination__next" href="index.php?p=2">Next page</a>
-	</p>
+	</p> -->
 </section>
 
 
@@ -423,6 +422,8 @@
 	</div>
 </div>
 
+<?php include('default/footer.tmpl.php'); ?>
+
 
 
 				<!-- Fecha y horario sugeridos -->
@@ -460,209 +461,46 @@
 </section> -->
 
 
-<!-- [[ Footer ]] -->
-<footer class="container bg-footer" id="footer">
-	<script id="footer-template" type="text/x-handlebars-template">
-		<div class="spacer-20"></div>
-		<div class="container-1200 center-content flex flex-wrap">
-
-			<!-- Address -->
-			<div class="i-b lg4 md4 sm6 ph12 p_75">
-				<p class="f-white f1">
-					<a href="" style="f-white f1">Aviso de privacidad</a>
-					<br><br><strong>{{ agencia }}</strong>
-					<br>
-					{{ dir_l1 }}<br />
-					{{ dir_l2 }}<br />
-					{{ dir_l3 }}<br />
-					<br>
-					<strong class="f1">Teléfono<br></strong>{{ telefono_track }}
-				</p>
-			</div>
-
-			<!--Social Links-->
-			<div class="i-b lg4 md4 sm6 ph12 p_75">
-				&nbsp;
-			</div>
-
-			<!--Redes sociales-->
-			<div class="i-b lg4 md4 sm6 ph12 p_5">
-				<div class="flex flex-wrap">
-					<div class="center center-content">
-						<a href="{{ facebook }}" target="_blank" class="i-b p_5">
-							<div class="btn-media">
-								<i class="glyph-icon flaticon-facebook-logo"></i>
-								{{ facebook }}
-							</div>
-						</a>
-						<a href="{{ twitter }}" target="_blank" class="i-b p_5">
-							<div class="btn-media">
-								<i class="glyph-icon flaticon-twitter-logo-silhouette"></i>
-								{{ twitter }}
-							</div>
-						</a>
-						<a href="{{ youtube }}" target="_blank" class="i-b p_5">
-							<div class="btn-media">
-								<i class="glyph-icon flaticon-youtube"></i>
-								{{ youtube }}
-							</div>
-						</a>
-						<a href="{{ instagram }}" target="_blank" class="i-b p_5">
-							<div class="btn-media">
-								<i class="glyph-icon flaticon-instagram-logo"></i>
-								{{ instagram }}
-							</div>
-						</a>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div class="ph12 bg-gray-audi">
-			<div class="container-1200 center-content flex flex-wrap">
-				<div class="i-b ph12 sm12 md8 lg8 center-content">
-					<p class="f-white center f10"><br><br>CRM automotriz es una herramienta de <a href="http://adpunto.mx/contact/" target="_blank" class="f10">adpunto.mx</a> ® 2017 Todos los derechos reservados.&nbsp; <strong class="f10">Teléfono</strong> &nbsp;(55) 5536 6156</p>
-				</div>
-			</div>
-			<div class="spacer-20"></div>
-		</div>
-	</script>
-</footer>
-
 
 
 <!-- [[ Scripts ]] -->
 
-<!-- JQuery -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
-<!-- Infinite Scroll -->
-<script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
-<!-- Handlebars JS -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
-
-
-<script>
-	//Initialization
-	$(document).ready(function () {
-		// AppInit();
-		
-
-		Waves.attach('.btn, .btn-floating', ['waves-light']);
-		Waves.attach('.view .mask', ['waves-light']);
-		Waves.attach('.waves-light', ['waves-light']);
-		Waves.attach('.navbar-nav a, .nav-icons li a, .navbar form, .nav-tabs .nav-item', ['waves-light']);
-		Waves.attach('.navbar-brand', ['waves-light']);
-		Waves.attach('.pager li a', ['waves-light']);
-		Waves.attach('.pagination .page-item .page-link', ['waves-effect']);
-		Waves.init();//Preloading script
-	});
-
-		$('.invfeed').infiniteScroll({
-				// options
-				path: '.pagination__next',
-				append: '.invcard',
-				status: '.scroller-status',
-				hideNav: '.pagination',
-			});
+<?php include('app/scripts.php'); ?>
 
 
 
 
-
-</script>
-            
-
-
-<!-- Checkbox -->
-<!-- <script src="assets/js/jquery-ui.js"></script>
-<script>
-		$( "#fecha_radioset" ).buttonset();
-		$( "#hora_radioset" ).buttonset();
-</script> -->
-
-<!-- <script>
-		$('.viewmore').on('click', function(){
-				$('.feature-list, .viewmore').toggleClass('active');
-		});
-</script> -->
-
-
-<!-- Custom scripts -->
-<script src="assets/js/app.js"></script>
-
+<!-- [[ Page Specific Scripts ]] -->
 <!-- Fancybox -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.0.47/jquery.fancybox.min.js"></script>
 <script>
-		<?php
-		$j=0;
-		foreach($vehiculos as $vehiculo):
-		?>
-				$(".itemgallery-<?=$j?>, #itemid-<?=$vehiculo['id']?> .invcard--thumb").click(function(){
-					$.fancybox.open([
-						<?php foreach($vehiculo['galleries_alt'] as $image):  ?>
-						{
-							src : 'http://www.adpdev.com/adp/mx/seminuevos/uploads/listings/pics<?=$vehiculo["id"]?>/<?=$image?>',
-							opts : {
-								closeClickOutside : false
-							}
-						},
-						<?php	endforeach;?>
+		$(document).on("click", ".gallery--btn", function(){
+				var i = $(this).attr('data-gallery');
+				var item = Inventario.json[i];
+				var galleries = Inventario.json[i].galleries_full;
+				var gals_root = 'http://www.adpdev.com/adp/mx/seminuevos/uploads/listings/pics';
+				// console.log(i);
 
-					], {
-					loop : false,
-					infobar: true
-					});
+				$.fancybox.open([
+								{src : gals_root+item.id+'/'+galleries[0]},
+								{src : gals_root+item.id+'/'+galleries[1]},
+								{src : gals_root+item.id+'/'+galleries[2]},
+								{src : gals_root+item.id+'/'+galleries[3]},
+								{src : gals_root+item.id+'/'+galleries[4]},
+						], {
+								loop : false,
+								infobar: true
 				});
-
-				// // iPhone interiors hover fix
-				// $('#flexiselDemo<?=$j?> div:nth-child(2)').on('click', function(){
-				// 	$(this).toggleClass('int-closeup');
-				// });
-
-		<?php
-		$j=$j+1;
-		endforeach;
-		?>
-</script>
-
-
-
-<!-- Script pop-up -->
-<script>
-		$(".meinteresa").click(function(){
-				var prefill_text = $(this).data("descprefill");
-				$("#mamoveranio").html(prefill_text);
-				$("#itemContactForm #comentarios").html("Estoy interesado en el " + prefill_text);
 		});
 </script>
 
 
-
-	<!-- F O R M U L A R I O S  A D P U N T O -->
-
-
-
-	<?php //include_once("includes/analyticstracking.php") ?>
-
-	<!-- Tracker Adpunto (Requiere jQuery 1+) -->
-	<script src="http://adpdev.com/adp/mx/seguimiento/api-assets/js/vendor/cookie.js"></script>
-	<script src="http://adpdev.com/adp/mx/seguimiento/api-assets/js/adpunto-commons.v1.js"></script>
-	<script src="http://adpdev.com/adp/mx/seguimiento/api-assets/js/adpunto-tracker.v1.js"></script>
-
-	<!-- API Buzón Adpunto -->
-	<script src="http://adpdev.com/adp/mx/seguimiento/api-assets/js/adpunto-buzon.v1.js"></script>
-
-	<!-- Script personalizado Buzón -->
-	<script src="assets/js/custom-form-buzon.js?v=1.01"></script>
-
-	<!-- / F O R M U L A R I O S  A D P U N T O -->
+<script>
+		$(document).ready(function(){
+				appInit(Inventario);
+		});
+</script>
 
 </body>
 </html>

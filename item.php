@@ -40,75 +40,31 @@
 	<!-- <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 	<link rel="icon" href="favicon.ico" type="image/x-icon"> -->
 
+	<script>
+		idx = '<?=$idx?>';
+		slug = '<?=$slug?>';
+		slug = slug.split("?");
+		slug = slug[0];
+	</script>
+
 </head>
 
 <body>
 
-<!-- [[ Default Site Header ]] -->
-<header id="header">
+<?php getCustomModule('header', $id_cartas) ?>
 
-	<!-- Contact Fixed Bar Mobile -->
-	<div id="fixed-contact-area" class="d-block d-sm-none">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-12">
-					<a href="tel:<?=$Agencia['telefono_tracking']?>">
-						<p id="phone-hours-mob">
-							<i class="flaticon-phone-receiver"></i>&nbsp;
-							<strong>Marque ahora <?=$Agencia['telefono_tracking']?></strong>
-						</p>
-					</a>
-				</div>
-				<div class="col-sm-12">
-					<p id="offhours-contact-mob">
-						<strong>
-							<a data-fancybox data-src="#gen-contact-form" href="javascript:;">CONTÁCTANOS</a>
-						</strong>
-					</p>
-				</div>
+<!-- [[ Loader ]]  -->
+<section id="loader" style="display:none; height:60vh; padding:8em;">
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12">
+				<h2>Loading ...</h2>
 			</div>
 		</div>
 	</div>
+</section>
 
-	<!-- Default Header -->
-	<div id="site-header-default" class="__fixed-top">
-		<div id="nav-mob">
-			<nav class="navbar navbar-expand-lg navbar-light bg-white">
-				<!-- Logo / Dealer Location -->
-				<div class="container">
-					<a class="navbar-brand" href="#">
-						<img src="/adp/cartas/logos/<?=$Agencia['logo']?>" alt="<?=$Agencia['logo']?>" />
-						<p><?=$Agencia['agencia']?></p>
-					</a>
-					
-					<a href="tel:<?=$Agencia['telefono_tracking']?>"><?=$Agencia['telefono_tracking']?></a>
-
-					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-
-					<div class="collapse navbar-collapse" id="navbarSupportedContent">
-						<ul class="navbar-nav ml-auto">
-							<li class="nav-item active">
-								<a class="nav-link" href="#">Inventario <span class="sr-only">(current)</span></a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Promociones</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Prueba de Manejo</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" href="#">Servicio</a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</nav>
-		</div>
-	</div>
-</header>
-
+<!-- [[ Item Details ]]  -->
 <section id="details">
 	<div class="container">
 		<div class="itemdetails">
@@ -159,50 +115,19 @@
 	</div>
 </section>
 
+<!-- [[ Footer ]] -->
+<?php getCustomModule('footer', $id_cartas) ?>
+
 <!-- [[ Scripts ]] -->
-
-<!-- JQuery -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<!-- Bootstrap tooltips -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.13.0/umd/popper.min.js"></script>
-<!-- Bootstrap core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/js/bootstrap.min.js"></script>
-<!-- MDB core JavaScript -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.0/js/mdb.min.js"></script>
-<!-- Infinite Scroll -->
-<script src="https://unpkg.com/infinite-scroll@3/dist/infinite-scroll.pkgd.min.js"></script>
-<!-- Handlebars JS -->
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.11/handlebars.min.js"></script>
-
-<!-- Custom scripts -->
-<script src="http://adpdev.com/landing-v2/assets/js/app.js"></script>
-
-
-
+<?php include('app/scripts.php'); ?>
 
 
 
 <script>
-
-	// Utils
-	function safehtmlArray(array_in){
-			array_out = [];
-
-			$(array_in).each(function(i){
-					array_out.push($('<textarea />').html(array_in[i]).text());
-			});
-
-			return array_out;
-	};
-
-	// JSON parse
-	$(document).ready(function(){
-		 
-			idx= '<?=$idx?>';
-			slug = '<?=$slug?>';
-			processData(Item, true)
-	});
-
+		$(document).ready(function(){
+				appInit(Item);
+				// processData(Item);
+		});
 </script>
 
 </body>

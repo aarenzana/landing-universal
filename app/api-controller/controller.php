@@ -47,19 +47,7 @@
 		$autos   = $conteos["total_vehiculos"];
 
 
-		// Item Detail by ID
-		$item_api = "http://adpdev.com/adp/mx/seminuevos/api.php?action=get-listing-by-id&idx=".$idx."&slug=".$slug."&location=".$id_seminuevos;
-		// var_dump($item_api);die();
-		$item_raw = file_get_contents($item_api);
-		$item = json_decode($item_raw,true);
-		$itemdetail = $item["dataset"];
 
 
-
-
-		// Functions
-		function doUrl($idx, $slug) {
-				return 'item.php/' . $idx . '/' . $slug;
-		}
 
 ?>

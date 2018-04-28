@@ -30,7 +30,7 @@
 				<nav class="navbar navbar-expand-lg navbar-light bg-white">
 					<!-- Logo / Dealer Location -->
 					<div class="container">
-						<a class="navbar-brand" href="index.php">
+						<a class="navbar-brand" href="javascript:;" onclick="doNavUrl('')">
 							<img src="http://adpdev.com/adp/cartas/logos/{{ logo }}" alt="{{ logo }}" />
 							<p>{{ agencia }}</p>
 						</a>
@@ -63,13 +63,3 @@
 		</div>
 	</script>
 </header>
-
-
-<!-- [[ Default Banner ]] -->
-<section id="herobanner" class="container-fluid" style="background:#e2e2e2; min-height:400px">
-		<div class="container" style="padding-top:10em">
-			<h2 class="display-5">Banner Callout Text</h2>
-			<p class="lead">This is a modified jumbotron that occupies the entire horizontal space of its parent.</p>
-			<a class="btn btn-primary waves-effect waves-light">CTA with waves</a>
-		</div>
-</section>

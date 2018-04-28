@@ -6,7 +6,7 @@
     var Agencia = {
         json: null,
         ajax_params: {
-            data: function () {
+            data: function () {                
                 var query = 'agencia=' + (window.location.search).slice(1);
                 return query;
             },
@@ -58,6 +58,8 @@
 
     var Inventario = {
         json: null,
+        template_id: 'listing-template',
+        parent_id: '#inventario',
         ajax_params: {
             data: function(){
                 return 'action=list-new-special-vehicles-agency-page&id_dealer=' + GlobalId.seminuevos + '&p=1&sort=year&order=asc';
@@ -65,145 +67,213 @@
             url: 'http://adpdev.com/adp/mx/seminuevos/api.php',
             method: 'GET'
         },
-        templateParse: function (template_id, parent_id) {
+        templateParse: function () {
             if (this.json.length == 0) {
                 console.log(this.json.length + "No results found");
                 return;
             }
-            var data = this.json;   
-            $.each(data, function (key, val) {
-                var source = document.getElementById(template_id).innerHTML;
-                var template = Handlebars.compile(source);
-                var context = {
-                    id: val.id,
-                    color_e: val.color_e,
-                    color_i: val.color_i,
-                };
-                var html = template(context);
+            
+            var data = this.json;
+            var source = document.getElementById(this.template_id).innerHTML;
+            var template = Handlebars.compile(source);
+            setTimeout(function () {
+                          
+                $('#loader').fadeOut();
+                $.each(data, function (key, val) {
+                    var features = (val.body).split(",");
+                    features = features.slice(0,5);
+                    
+                    var context = {
+                        i: key,
+                        id: val.id,
+                        idx: val.idx,
+                        color_e: val.color_e,
+                        color_i: val.color_i,
+                        engine: val.engine,
+                        featured: val.featured,
+                        features: safeHtml(features),
+                        interior: val.galleries[1],
+                        galleries_full: val.galleries_full,
+                        galleries_ext: val.galleries_ext,
+                        galleries_int: val.galleries_int,
+                        horse_power: val.horse_power,
+                        milege: val.milege,
+                        make: val.nombre_marca,
+                        model: val.nombre_modelo,
+                        price: val.price,
+                        price_sale: val.price_sale,
+                        slug: val.slug,
+                        status: val.status,
+                        stock_id: val.stock_id,
+                        thumb: val.thumb,
+                        title: val.title,
+                        trans_name: val.trans_name,
+                        vin: val.vin,
+                        year: val.year
+                    };
+                    var html = template(context);
 
-                $(parent_id).append(html);
-            });
+                    $(Inventario.parent_id).append(html);
+                    $("#inventario").fadeIn('slow');
+                });
+                
+            }, 1600);
             
         }
     };
 
 
-    // var Item = {
-    //     json: null,
-    //     ajax_params: { 
-    //         data: function(){
-    //             this.idx = idx;
-    //             this.slug = slug;
-    //             return 'action=get-listing-by-id&idx=' + this.idx + '&slug=' + this.slug + '&location=' + GlobalId.seminuevos;
-    //         },
-    //         url: 'http://adpdev.com/adp/mx/seminuevos/api.php',
-    //         method: 'GET'
-    //     },
-    //     template_context: {
-    //         title: item.title,
-    //         listing_id: item.lid,
-    //         stock_id: item.stock_id,
-    //         vin: item.vin,
-    //         year: item.year,
-    //         mileage: item.milege,
-    //         torque: item.torque,
-    //         thumb: item.thumb,
-    //         detail_items: {
-    //             "VIN": item.vin,
-    //             "Puertas": item.doors,
-    //             "HP": item.horse_power,
-    //             "Transmisión": item.trans_name,
-    //             "Precio": "$" + parseInt(item.price).toLocaleString(),
-    //             "Color exterior": item.color_e,
-    //             "Color interior": item.color_i,
-    //             "Motor": item.engine,
-    //             "Combustible": item.fuel_name,
-    //             "Categoria": item.category_name
-    //         },
-    //         price: parseInt(item.price).toLocaleString(),
-    //         price_sale: parseInt(item.price_sale).toLocaleString(),
-    //         color_e: item.color_e,
-    //         color_i: item.color_i,
-    //         doors: item.doors,
-    //         engine: item.engine,
-    //         top_speed: item.top_speed,
-    //         horse_power: item.horse_power,
-    //         features: safehtmlArray(featuresArray),
-    //         sold: item.featured,
-    //         make: item.make_name,
-    //         model: item.model_name,
-    //         type: item.condition_name,
-    //         category: item.category_name,
-    //         fuel: item.fuel_name,
-    //         trans: item.trans_name
-    //     },
-    //     parseTemplate: function(data){
-    //         if (data.length == 0) {
-    //             console.log("No results found");
-    //             return;
-    //         }
+    var Item = {
+        json: null,
+        template_id: 'item-template',
+        parent_id: '.itemdetails',
+        ajax_params: { 
+            data: function(){
+                this.idx = idx;
+                this.slug = slug;
+                var query = 'action=get-listing-by-id&idx=' + this.idx + '&slug=' + this.slug + '&location=' + GlobalId.seminuevos;
+                return query;
+            },
+            url: 'http://adpdev.com/adp/mx/seminuevos/api.php',
+            method: 'GET'
+        },
+        templateData: function(){
+            var featuresArray = (this.json.body).split(",");
+            var data = {
+                title: this.json.title,
+                listing_id: this.json.lid,
+                stock_id: this.json.stock_id,
+                vin: this.json.vin,
+                year: this.json.year,
+                mileage: this.json.milege,
+                torque: this.json.torque,
+                thumb: this.json.thumb,
+                detail_items: {
+                    "VIN": this.json.vin,
+                    "Puertas": this.json.doors,
+                    "HP": this.json.horse_power,
+                    "Transmisión": this.json.trans_name,
+                    "Precio": "$" + parseInt(this.json.price).toLocaleString(),
+                    "Color exterior": this.json.color_e,
+                    "Color interior": safeHtml(this.json.color_i),
+                    "Motor": this.json.engine,
+                    "Combustible": this.json.fuel_name,
+                    "Categoria": this.json.category_name
+                },
+                price: parseInt(this.json.price).toLocaleString(),
+                price_sale: parseInt(this.json.price_sale).toLocaleString(),
+                color_e: this.json.color_e,
+                color_i: this.json.color_i,
+                doors: this.json.doors,
+                engine: this.json.engine,
+                top_speed: this.json.top_speed,
+                horse_power: this.json.horse_power,
+                features: safeHtml(featuresArray),
+                sold: this.json.featured,
+                make: this.json.make_name,
+                model: this.json.model_name,
+                type: this.json.condition_name,
+                category: this.json.category_name,
+                fuel: this.json.fuel_name,
+                trans: this.json.trans_name
+            };
+            return data;
+        },
+        templateParse: function () {
+            if (this.json.length == 0) {
+                console.log(this.json.length + "No results found");
+                return;
+            }
 
-    //         var item = data.dataset;
-    //         var source = document.getElementById("item-template").innerHTML;
-    //         var template = Handlebars.compile(source);
+            var source = document.getElementById(this.template_id).innerHTML;
+            var template = Handlebars.compile(source);
 
-    //         featuresArray = (item.body).split(",");
+            var context = this.templateData();
+            var html = template(context);
+            setTimeout(function () {
+                $('#loader').hide();
+                $(Item.parent_id).append(html);
+            }, 1600);
+            
+        }
 
-    //         var context = this.template_context;
-    //         var html = template(context);
+    };
 
-    //         // console.log(html);
-    //         $(".itemdetails").append(html);
+    function appInit(obj) {
+        // console.log(obj.ajax_params.data());
+        $.ajax({
+                data: Agencia.ajax_params.data(),
+                url: Agencia.ajax_params.url,
+                method: Agencia.ajax_params.method,
+                async: true,
+                success: function (data) {
+                    Agencia.json = data.dataset;
+                    var ag_ids = JSON.parse(Agencia.json.info);
+                    GlobalId.seminuevos = ag_ids.data.id_seminuevos;
+                    GlobalId.cartas = ag_ids.data.id_cartas;
+                    GlobalId.seguimiento = ag_ids.data.id_seguimiento;
+                    console.log(GlobalId);
+                    $('#loader').fadeIn('slow');
+                }
+            })
+            .then(function (data) {
+                Agencia.templateParse('header-template', '#header');
+                Agencia.templateParse('footer-template', '#footer');
+            
+                processData(obj);
+                                          
+            });
+    }
 
-    //     }
-    // };
 
-
-    function processData(obj, parse, template) {
+    function processData(obj) {
         // console.log(obj.ajax_params.data());
         $.ajax({
             data: obj.ajax_params.data(),
             url: obj.ajax_params.url,
             method: obj.ajax_params.method,
-            async: false,
+            async: true,
             success: function (data) {
-                obj.json = data.dataset;
+                          
             }        
         })
-        .done(function (data) {
-            if(parse){
-                // console.log('Parsing template');
-                // obj.parseTemplate(data);
-            }else{
-                console.log('Only get data:');
-                console.log(obj.json);
-            }
+        .then(function (data) {
+            // console.log('Only get data:');
+            // console.log(obj.json);
+            obj.json = data.dataset;
+   
+            obj.templateParse();           
+
         });
     }
 
 
-    function getAppData(type){        
-        processData(Agencia);
-        var ag_ids = JSON.parse(Agencia.json.info);
-        GlobalId.seminuevos  = ag_ids.data.id_seminuevos;
-        GlobalId.cartas      = ag_ids.data.id_cartas;
-        GlobalId.seguimiento = ag_ids.data.id_seguimiento;
+    // Utils
+    function safeHtml(val) {
+        if (typeof (val) === 'object') {
+            array_out = [];
 
-        switch (type) {
-            case 'inventario':
-                processData(Inventario);
-                break;
-            case 'item':
-                processData(Item);
-                break;
+            $(val).each(function (i) {
+                array_out.push($('<textarea />').html(val[i]).text());
+            });
+            return array_out;
+            
+        } else if (typeof (val) === 'string') {
+            return ($('<textarea />').html(val).text());
         }
     }
 
+    function doItemUrl(idx, slug) {
+        var agencia = (window.location.search).slice(1);
+        window.location.href = 'item.php/'+idx+'/'+slug+'?'+agencia;        
+    }
 
-    $(document).ready(function(){
-        getAppData('inventario');
-        Agencia.templateParse('footer-template', '#footer');
-        Agencia.templateParse('header-template', '#header');
-        Inventario.templateParse('listing-template', '#inventario');
-    });
+    function doNavUrl(nav) {
+        var agencia = (window.location.search).slice(1);
+        window.location.href = '/landing-v2/' + nav + '?' + agencia;
+    }
+
+
+
+    
 // }
